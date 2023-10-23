@@ -1,5 +1,8 @@
 import { AppBar, Toolbar, styled, Box } from "@mui/material";
 import LoginDialog from "./account/LoginDialog";
+import { useContext } from "react";
+import { AccountContext } from "../context/AccountProvider";
+import ChatDialog from "./chat/ChatDialog";
 
 const Component = styled(Box)`
   height: 100vh;
@@ -13,12 +16,24 @@ const Header = styled(AppBar)`
 `;
 
 const Messenger = () => {
+  const { account } = useContext(AccountContext);
   return (
     <Component>
-      <Header>
-        <Toolbar></Toolbar>
-      </Header>
-      <LoginDialog />
+      {account ? (
+        <>
+          <Header>
+            <Toolbar></Toolbar>
+          </Header>
+          <ChatDialog />
+        </>
+      ) : (
+        <>
+          <Header>
+            <Toolbar></Toolbar>
+          </Header>
+          <LoginDialog />
+        </>
+      )}
     </Component>
   );
 };

@@ -1,7 +1,8 @@
 import { Dialog, Box, ListItem, List, styled, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
+import { AccountContext } from "../../context/AccountProvider";
 
 const dialogStyle = {
   height: "45%",
@@ -39,9 +40,10 @@ const Title = styled(Typography)`
 `;
 
 const LoginDialog = () => {
+  const { setAccount } = useContext(AccountContext);
   const onLoginSuccess = (res) => {
-    const decode = jwt_decode(res.credential);
-    console.log("Login Success", decode);
+    const decoded_info = jwt_decode(res.credential);
+    setAccount(decoded_info);
   };
 
   const onLoginFailure = (res) => {
