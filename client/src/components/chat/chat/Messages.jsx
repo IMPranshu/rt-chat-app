@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { Box, styled } from "@mui/material";
 import Footer from "./Footer";
 import { AccountContext } from "../../../context/AccountProvider";
@@ -25,6 +25,7 @@ const Messages = ({ person, conversation }) => {
   const [file, setFile] = useState();
   const [image, setImage] = useState("");
 
+  const scrollRef = useRef();
   const [newMessageFlag, setNewMessageFlag] = useState(false);
 
   useEffect(() => {
@@ -35,6 +36,9 @@ const Messages = ({ person, conversation }) => {
     conversation._id && getMessageDetails();
   }, [person._id, conversation._id, newMessageFlag]);
 
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ transition: "smooth" });
+  }, [messages]);
   const sendText = async (e) => {
     const code = e.keyCode || e.which;
     if (code === 13) {
@@ -63,12 +67,13 @@ const Messages = ({ person, conversation }) => {
       setNewMessageFlag((prev) => !prev);
     }
   };
+
   return (
     <Wrapper>
       <Component>
         {messages &&
           messages.map((message) => (
-            <Container>
+            <Container ref={scrollRef}>
               <Message message={message} />
             </Container>
           ))}
