@@ -1,10 +1,18 @@
 import { Server } from "socket.io";
+import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
+import http from "http";
 dotenv.config();
 
-const io = new Server(9001, {
+const app = express();
+app.use(cors());
+const server = http.createServer(app);
+
+const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
+    methods: ["GET", "POST"],
   },
 });
 
@@ -20,7 +28,7 @@ const getUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("user connected");
+  console.log(`User connected ${socket.id}`);
 
   socket.on("addUsers", (userData) => {
     addUser(userData, socket.id);
@@ -32,3 +40,5 @@ io.on("connection", (socket) => {
     io.to(user.socketId).emit("getMessage", data);
   });
 });
+
+server.listen(9001, () => "Server is running on port 9001");
