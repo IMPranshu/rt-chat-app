@@ -6,7 +6,16 @@ import http from "http";
 dotenv.config();
 
 const app = express();
+
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://rt-chat-app.vercel.app"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+  next();
+});
 const server = http.createServer(app);
 
 const io = new Server(server, {
