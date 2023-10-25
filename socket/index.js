@@ -9,10 +9,7 @@ const app = express();
 
 app.use(cors());
 app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://rt-chat-app.vercel.app"
-  );
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST");
   next();
 });
@@ -20,7 +17,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://rt-chat-app.vercel.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -48,6 +45,7 @@ io.on("connection", (socket) => {
     const user = getUser(data.receiverId);
     if (user) {
       io.to(user.socketId).emit("getMessage", data);
+      socket.emit("getMessage", data);
     } else {
       console.log(`User with ID ${data.receiverId} not found.`);
     }
