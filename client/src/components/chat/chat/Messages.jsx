@@ -21,12 +21,28 @@ const Container = styled(Box)`
 const Messages = ({ person, conversation }) => {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState([]);
-  const { account } = useContext(AccountContext);
+  const { account, socket } = useContext(AccountContext);
   const [file, setFile] = useState();
   const [image, setImage] = useState("");
+  const [incomingMessage, setIncomingMessage] = useState(null);
 
   const scrollRef = useRef();
   const [newMessageFlag, setNewMessageFlag] = useState(false);
+
+  useEffect(() => {
+    socket.current.on("getMessage", (data) => {
+      setIncomingMessage({
+        ...data,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    incomingMessage &&
+      conversation?.members?.includes(incomingMessage.senderId) &&
+      setMessages((prev) => [...prev, incomingMessage]);
+  }, [incomingMessage, conversation]);
 
   useEffect(() => {
     const getMessageDetails = async () => {
@@ -39,6 +55,7 @@ const Messages = ({ person, conversation }) => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ transition: "smooth" });
   }, [messages]);
+
   const sendText = async (e) => {
     const code = e.keyCode || e.which;
     if (code === 13) {
@@ -60,6 +77,7 @@ const Messages = ({ person, conversation }) => {
           text: image,
         };
       }
+      socket.current.emit("sendMessage", message);
       await newMessage(message);
       setValue("");
       setFile("");
