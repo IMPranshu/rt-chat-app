@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:8000";
+const url = process.env.REACT_APP_API_URL;
 
 export const addUser = async (data) => {
   try {
@@ -50,5 +50,13 @@ export const getMessages = async (id) => {
     return response.data;
   } catch (error) {
     console.log("Error while calling getMessages API ", error);
+  }
+};
+
+export const uploadFile = async (data) => {
+  try {
+    return await axios.post(`${url}/file/upload`, data);
+  } catch (error) {
+    console.log("Error while calling newConversations API ", error);
   }
 };
