@@ -49,7 +49,11 @@ const ChatHeader = ({ person }) => {
       <Image src={person.picture} alt="display picture" />
       <Box>
         <Name>{person.name}</Name>
-        <Status>"Online"</Status>
+        <Status>
+          {activeUsers?.find((user) => user.sub === person.sub)
+            ? "Online"
+            : "Offline"}
+        </Status>
       </Box>
       <RightContainer>
         <Search />
