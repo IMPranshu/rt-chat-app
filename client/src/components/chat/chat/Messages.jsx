@@ -21,13 +21,13 @@ const Container = styled(Box)`
 const Messages = ({ person, conversation }) => {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState([]);
-  const { account, socket } = useContext(AccountContext);
+  const { account, socket, newMessageFlag, setNewMessageFlag } =
+    useContext(AccountContext);
   const [file, setFile] = useState();
   const [image, setImage] = useState("");
   const [incomingMessage, setIncomingMessage] = useState(null);
 
   const scrollRef = useRef();
-  const [newMessageFlag, setNewMessageFlag] = useState(false);
 
   useEffect(() => {
     socket.current.on("getMessage", (data) => {
